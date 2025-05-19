@@ -8,7 +8,8 @@ import (
 )
 
 type Todo struct {
-	Title string `json:"title"`
+	ID          uint   `json:"id" gorm:"primaryKey"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
