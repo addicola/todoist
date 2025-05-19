@@ -23,6 +23,7 @@ func main() {
 
 	r := gin.Default()
 
+	r.GET("/todos", todoHandler.GetTodos)
 	r.POST("/todos", todoHandler.CreateTodo)
 	
 	r.Run(":8080")

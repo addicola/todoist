@@ -20,6 +20,15 @@ func NewTodoHandler(db *gorm.DB) *TodoHandler {
 	return &TodoHandler{db: db}
 }
 
+func (t *TodoHandler) GetTodos(c *gin.Context) {
+	var todos []Todo
+	if err := t.db.Find(&todos).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch todos"})
+		return
+	}
+	c.JSON(http.StatusOK, todos)
+}
+
 func (t *TodoHandler) CreateTodo(c *gin.Context) {
 	var todo Todo
 	if err := c.ShouldBindJSON(&todo); err != nil {
