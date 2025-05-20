@@ -3,8 +3,8 @@ package todo
 import (
 	"net/http"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
 )
 
@@ -38,7 +38,7 @@ func (t *TodoHandler) CreateTodo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	
+
 	// Validator to ensure Title is not empty
 	if err := validate.Struct(todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
