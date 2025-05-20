@@ -3,13 +3,14 @@ package todo
 import (
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type Todo struct {
 	ID          uint   `json:"id" gorm:"primaryKey"`
-	Title       string `json:"title"`
+	Title       string `json:"title" gorm:"not null" validate:"required"`
 	Description string `json:"description"`
 }
 
@@ -32,7 +33,14 @@ func (t *TodoHandler) GetTodos(c *gin.Context) {
 
 func (t *TodoHandler) CreateTodo(c *gin.Context) {
 	var todo Todo
+	var validate = validator.New()
 	if err := c.ShouldBindJSON(&todo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	// Validator to ensure Title is not empty
+	if err := validate.Struct(todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
