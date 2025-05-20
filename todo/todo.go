@@ -80,3 +80,18 @@ func (t *TodoHandler) UpdateTodo(c *gin.Context) {
 
 	c.JSON(http.StatusOK, todo)
 }
+
+func (t *TodoHandler) DeleteTodo(c *gin.Context) {
+	var todo Todo
+	if err := t.db.First(&todo, c.Param("id")).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Todo not found"})
+		return
+	}
+
+	if err := t.db.Delete(&todo).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete todo"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
+}
