@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
 
-joubs:
+jobs:
   test:
     name: Unittest
     runs-on: ubuntu-latest
