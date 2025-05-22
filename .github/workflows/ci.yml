@@ -18,21 +18,6 @@ jobs:
         with:
           go-version: 1.23
 
-      - name: Clean Go module cache before restoring
-        run: |
-          rm -rf ~/go/pkg/mod
-          rm -rf ~/.cache/go-build
-
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Install Dependencies
         run: go mod tidy
 
