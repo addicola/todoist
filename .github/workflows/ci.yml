@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+joubs:
+  test:
+    name: Unittest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Golang
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23
+
+      - name: Cache Golang modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restores-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install Dependencies
+        run: go mod tidy
+
+      - name: Run tests
+        run: go test -v ./..
