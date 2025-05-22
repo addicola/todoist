@@ -18,16 +18,6 @@ jobs:
         with:
           go-version: 1.23
 
-      - name: Cache Golang modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restores-keys: |
-            ${{ runner.os }}-go-
-
       - name: Install Dependencies
         run: go mod tidy
 
