@@ -63,3 +63,23 @@ func TestCreateTodo_Success(t *testing.T) {
 	assert.Equal(t, "Test Todo", createdTodo.Title)
 	assert.Equal(t, "This is a test todo", createdTodo.Description)
 }
+
+func TestCreateTodo_Failure(t *testing.T) {
+	db := setupTestDB()
+	defer db.Exec("DROP TABLE todos") // Clean up the database after the test
+
+	// Setup the router
+	router := setupRouter(db)
+
+	// Create a new todo with missing title
+	todo := Todo{Description: "This is a test todo"}
+	body, _ := json.Marshal(todo)
+
+	req, _ := http.NewRequest("POST", "/todos", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
