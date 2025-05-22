@@ -83,3 +83,29 @@ func TestCreateTodo_Failure(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+
+func TestGetTodos_Success(t *testing.T) {
+	db := setupTestDB()
+	defer db.Exec("DROP TABLE todos") // Clean up the database after the test
+
+	// Setup the router
+	router := setupRouter(db)
+
+	// Create a new todo
+	todo := Todo{Title: "Test Todo", Description: "This is a test todo"}
+	db.Create(&todo)
+
+	// Get all todos
+	req, _ := http.NewRequest("GET", "/todos", nil)
+	w := httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var todos []Todo
+	err := json.Unmarshal(w.Body.Bytes(), &todos)
+	assert.NoError(t, err)
+	assert.Len(t, todos, 1)
+	assert.Equal(t, "Test Todo", todos[0].Title)
+}
